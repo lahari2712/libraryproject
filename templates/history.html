@@ -1,0 +1,139 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Circulation History | LibPortal{% endblock %}
+{% block content %}
+<div class="row g-4 animate-fade-in">
+    <div class="col-12">
+        <h1 class="fw-bold mb-2 text-primary" style="font-family: 'Outfit', sans-serif;">Circulation Records</h1>
+        <p class="text-secondary">Track checked out books, return timelines, overdue flags, and late fee tallies.</p>
+    </div>
+
+    <!-- Filters & Search Form -->
+    <div class="col-12">
+        <div class="glass-panel p-4 mb-2">
+            <form method="get" class="row g-3">
+                <div class="col-md-5">
+                    <label class="form-label small text-secondary fw-semibold">Search Member</label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-transparent border-end-0 border-secondary-subtle text-secondary"><i class="bi bi-person"></i></span>
+                        <input type="text" name="member_id" value="{{ member_id_filter }}" class="form-control border-start-0 border-secondary-subtle bg-transparent text-primary" placeholder="Enter Member ID or Name...">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label small text-secondary fw-semibold">Circulation Status</label>
+                    <select name="status" class="form-select border-secondary-subtle bg-transparent text-primary">
+                        <option value="">All Transactions</option>
+                        <option value="active" {% if status_filter == 'active' %}selected{% endif %}>Active / Checked Out</option>
+                        <option value="returned" {% if status_filter == 'returned' %}selected{% endif %}>Returned Records</option>
+                        <option value="overdue" {% if status_filter == 'overdue' %}selected{% endif %}>Overdue (Unreturned)</option>
+                    </select>
+                </div>
+                <div class="col-md-3 d-flex align-items-end">
+                    <button type="submit" class="btn btn-primary-gradient w-100 py-2"><i class="bi bi-funnel-fill me-1"></i>Filter Records</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Selected Member Statistics Summary Panel -->
+    {% if selected_member %}
+    <div class="col-12 animate-fade-in">
+        <div class="glass-panel p-4 border-start border-4 border-primary">
+            <h5 class="fw-bold text-primary mb-3" style="font-family: 'Outfit', sans-serif;"><i class="bi bi-person-badge-fill me-2"></i>Member Summary: {{ selected_member.name }}</h5>
+            <div class="row g-3 text-center">
+                <div class="col-6 col-md-3 border-end border-secondary-subtle">
+                    <span class="text-secondary small d-block">Total Borrowed</span>
+                    <strong class="text-primary fs-4">{{ total_borrowed }}</strong>
+                </div>
+                <div class="col-6 col-md-3 border-end border-secondary-subtle">
+                    <span class="text-secondary small d-block">Active Loans</span>
+                    <strong class="text-warning fs-4">{{ active_borrowed }}</strong>
+                </div>
+                <div class="col-6 col-md-3 border-end border-secondary-subtle">
+                    <span class="text-secondary small d-block">Overdue Books</span>
+                    <strong class="text-danger fs-4">{{ overdue_count }}</strong>
+                </div>
+                <div class="col-6 col-md-3">
+                    <span class="text-secondary small d-block">Total Fines Paid/Accrued</span>
+                    <strong class="text-danger fs-4">₹{{ total_fines }}</strong>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Records Table -->
+    <div class="col-12">
+        <div class="responsive-table-container">
+            <table class="table mb-0">
+                <thead>
+                    <tr>
+                        <th>Book Title</th>
+                        <th>Issued To</th>
+                        <th>Card ID</th>
+                        <th>Issue Date</th>
+                        <th>Due Date</th>
+                        <th>Return Date</th>
+                        <th>Fine Status</th>
+                        <th>Timeline Status</th>
+                        {% if user.is_authenticated and user.is_staff %}
+                        <th>Action</th>
+                        {% endif %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for record in records %}
+                    <tr>
+                        <td class="fw-semibold text-primary">
+                            <a href="{% url 'book_detail' record.book.id %}" class="text-decoration-none text-primary">{{ record.book.title }}</a>
+                        </td>
+                        <td>{{ record.member.name }}</td>
+                        <td><code>{{ record.member.member_id }}</code></td>
+                        <td>{{ record.issue_date|date:"d-b-Y" }}</td>
+                        <td>{{ record.due_date|date:"d-b-Y" }}</td>
+                        <td>
+                            {% if record.return_date %}
+                            {{ record.return_date|date:"d-b-Y" }}
+                            {% else %}
+                            <span class="text-secondary small">--</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if record.fine_amount > 0 %}
+                            <span class="text-danger fw-bold">₹{{ record.fine_amount }}</span>
+                            {% else %}
+                            <span class="text-success small">None</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if record.is_returned %}
+                            <span class="badge rounded-pill bg-success-subtle text-success border border-success-subtle px-3">Returned</span>
+                            {% else %}
+                            <span class="countdown-timer" data-due-date="{{ record.due_date|date:'Y-m-d' }}">Checking...</span>
+                            {% endif %}
+                        </td>
+                        {% if user.is_authenticated and user.is_staff %}
+                        <td>
+                            {% if not record.is_returned %}
+                            <a href="{% url 'book_return' record.id %}" class="btn btn-sm btn-primary-gradient px-3 rounded-pill">
+                                <i class="bi bi-journal-arrow-up me-1"></i>Return
+                            </a>
+                            {% else %}
+                            <button class="btn btn-sm btn-outline-secondary px-3 rounded-pill" disabled>Done</button>
+                            {% endif %}
+                        </td>
+                        {% endif %}
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="9" class="text-center text-secondary py-4">No circulation records found matching your filters.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+{% include 'pagination.html' %}
+{% endblock %}

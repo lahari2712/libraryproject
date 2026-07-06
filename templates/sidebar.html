@@ -1,0 +1,65 @@
+<div class="sidebar-panel h-100">
+    <div>
+        <!-- Profile block -->
+        <div class="text-center py-3 border-bottom border-secondary-subtle mb-3">
+            <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150&q=80" class="sidebar-avatar-img mb-2" alt="Librarian Avatar">
+            <div class="small text-secondary">Welcome,</div>
+            <div class="fw-bold text-primary fs-5">{{ user.username }}</div>
+            <div class="small text-secondary fw-semibold">Librarian</div>
+        </div>
+
+        <!-- Main Menu -->
+        <div class="sidebar-header">Main Menu</div>
+        <nav class="nav flex-column gap-1">
+            <a href="{% url 'dashboard' %}" class="sidebar-menu-item {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
+                <i class="bi bi-speedometer2"></i>
+                <span>Dashboard</span>
+            </a>
+            <a href="{% url 'catalog' %}" class="sidebar-menu-item {% if request.resolver_match.url_name == 'catalog' %}active{% endif %}">
+                <i class="bi bi-journal-text"></i>
+                <span>Book Catalog</span>
+            </a>
+            <a href="{% url 'book_issue' %}" class="sidebar-menu-item {% if request.resolver_match.url_name == 'book_issue' %}active{% endif %}">
+                <i class="bi bi-journal-plus"></i>
+                <span>Issue Book</span>
+            </a>
+            <a href="{% url 'history' %}?status=active" class="sidebar-menu-item {% if request.resolver_match.url_name == 'history' and request.GET.status == 'active' %}active{% endif %}">
+                <i class="bi bi-journal-arrow-up"></i>
+                <span>Return Book</span>
+            </a>
+            <a href="{% url 'members' %}" class="sidebar-menu-item {% if request.resolver_match.url_name == 'members' %}active{% endif %}">
+                <i class="bi bi-people"></i>
+                <span>Members</span>
+            </a>
+            <a href="{% url 'history' %}" class="sidebar-menu-item {% if request.resolver_match.url_name == 'history' and not request.GET.status %}active{% endif %}">
+                <i class="bi bi-clock-history"></i>
+                <span>History</span>
+            </a>
+        </nav>
+
+        <!-- Account -->
+        <div class="sidebar-header">Account</div>
+        <nav class="nav flex-column gap-1">
+            <a href="#" class="sidebar-menu-item">
+                <i class="bi bi-person-gear"></i>
+                <span>Profile</span>
+            </a>
+            <form action="{% url 'logout' %}" method="post" class="d-inline w-100">
+                {% csrf_token %}
+                <button type="submit" class="sidebar-menu-item logout border-0 bg-transparent w-100 text-start">
+                    <i class="bi bi-box-arrow-right"></i>
+                    <span>Logout</span>
+                </button>
+            </form>
+        </nav>
+    </div>
+
+    <!-- Clock Widget -->
+    <div class="clock-widget">
+        <div class="text-secondary small fw-bold mb-1">
+            <i class="bi bi-clock-fill text-primary"></i> Library Time
+        </div>
+        <h5 id="library-clock" class="fw-bold text-primary mb-1">--:--:-- --</h5>
+        <div id="library-date" class="small text-secondary">--</div>
+    </div>
+</div>

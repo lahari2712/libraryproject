@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Contact Us | LibPortal{% endblock %}
+{% block content %}
+<div class="row g-4 animate-fade-in justify-content-center">
+    <div class="col-lg-8 col-md-10 col-sm-12">
+        <div class="glass-panel p-5">
+            <h1 class="fw-bold text-primary mb-2" style="font-family: 'Outfit', sans-serif;"><i class="bi bi-envelope-at-fill me-2"></i>Contact Portal</h1>
+            <p class="text-secondary mb-4">Send support inquiries, book acquisition requests, or feedback directly to our administrative team.</p>
+            
+            <form method="post" action="" onsubmit="event.preventDefault(); alert('Thank you! Your message has been sent successfully.'); this.reset();">
+                <div class="row g-3 mb-3">
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">Your Name</label>
+                        <input type="text" required class="form-control bg-transparent text-primary border-secondary-subtle" placeholder="Full Name">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">Email Address</label>
+                        <input type="email" required class="form-control bg-transparent text-primary border-secondary-subtle" placeholder="name@example.com">
+                    </div>
+                </div>
+                <div class="mb-4">
+                    <label class="form-label fw-semibold">Message</label>
+                    <textarea rows="5" required class="form-control bg-transparent text-primary border-secondary-subtle" placeholder="Type your message details here..."></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary-gradient px-4"><i class="bi bi-send-fill me-1"></i>Send Message</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

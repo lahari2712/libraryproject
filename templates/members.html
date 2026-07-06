@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Members Directory | LibPortal{% endblock %}
+{% block content %}
+<div class="row g-4 animate-fade-in">
+    <div class="col-12 d-flex justify-content-between align-items-center flex-wrap gap-3">
+        <div>
+            <h1 class="fw-bold mb-2 text-primary" style="font-family: 'Outfit', sans-serif;">Members Directory</h1>
+            <p class="text-secondary mb-0">Manage registered readers, search library cards, and view active loan counts.</p>
+        </div>
+        <a href="{% url 'member_create' %}" class="btn btn-primary-gradient px-4"><i class="bi bi-person-plus me-1"></i>Register Member</a>
+    </div>
+
+    <!-- Filter/Search Bar -->
+    <div class="col-12">
+        <div class="glass-panel p-4 mb-2">
+            <form method="get" class="row g-3">
+                <div class="col-md-10">
+                    <div class="input-group">
+                        <span class="input-group-text bg-transparent border-end-0 border-secondary-subtle text-secondary"><i class="bi bi-search"></i></span>
+                        <input type="text" name="search" value="{{ search_query }}" class="form-control border-start-0 border-secondary-subtle bg-transparent text-primary" placeholder="Search members by name, ID, or email...">
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-primary-gradient w-100"><i class="bi bi-funnel-fill me-1"></i>Filter</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Members table -->
+    <div class="col-12">
+        <div class="responsive-table-container">
+            <table class="table mb-0">
+                <thead>
+                    <tr>
+                        <th>Member Name</th>
+                        <th>Member ID</th>
+                        <th>Email Address</th>
+                        <th>Phone</th>
+                        <th>Joined Date</th>
+                        <th>Active Loans</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for member in members %}
+                    <tr>
+                        <td class="fw-semibold text-primary"><i class="bi bi-person-circle text-secondary me-2"></i>{{ member.name }}</td>
+                        <td><code>{{ member.member_id }}</code></td>
+                        <td>{{ member.email }}</td>
+                        <td>{{ member.phone }}</td>
+                        <td>{{ member.joined_date|date:"d-b-Y" }}</td>
+                        <td>
+                            <span class="badge rounded-pill {% if member.active_loans > 0 %}badge-lowstock{% else %}badge-available{% endif %}">
+                                {{ member.active_loans }} active
+                            </span>
+                        </td>
+                        <td>
+                            <a href="{% url 'history' %}?member_id={{ member.member_id }}" class="btn btn-sm btn-outline-primary px-3 rounded-pill">
+                                <i class="bi bi-clock-history me-1"></i>History
+                            </a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="7" class="text-center text-secondary py-4">No registered members match your search criteria.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+{% include 'pagination.html' %}
+{% endblock %}

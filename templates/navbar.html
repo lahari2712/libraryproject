@@ -1,0 +1,86 @@
+<nav class="navbar navbar-expand-lg navbar-dark navbar-custom py-3">
+    <div class="container-fluid px-4">
+        <!-- Brand logo -->
+        <a class="navbar-brand d-flex align-items-center fw-bold me-4" href="{% url 'home' %}">
+            <i class="bi bi-book-half text-white fs-3 me-2"></i>
+            <span style="font-family: 'Outfit', sans-serif; letter-spacing: 0.5px;">Digital Library Portal</span>
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        
+        <div class="collapse navbar-collapse" id="navbarContent">
+            <!-- Navigation Links -->
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link {% if request.resolver_match.url_name == 'home' %}active{% endif %}" href="{% url 'home' %}">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {% if request.resolver_match.url_name == 'catalog' %}active{% endif %}" href="{% url 'catalog' %}">Catalog</a>
+                </li>
+                {% if user.is_authenticated and user.is_staff %}
+                <li class="nav-item">
+                    <a class="nav-link {% if request.resolver_match.url_name == 'members' %}active{% endif %}" href="{% url 'members' %}">Members</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {% if request.resolver_match.url_name == 'book_issue' %}active{% endif %}" href="{% url 'book_issue' %}">Issue Book</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {% if request.resolver_match.url_name == 'history' and not request.GET.status %}active{% endif %}" href="{% url 'history' %}">Return Book</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}" href="{% url 'dashboard' %}">Dashboard</a>
+                </li>
+                {% endif %}
+                <li class="nav-item">
+                    <a class="nav-link {% if request.resolver_match.url_name == 'about' %}active{% endif %}" href="{% url 'about' %}">About</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {% if request.resolver_match.url_name == 'contact' %}active{% endif %}" href="{% url 'contact' %}">Contact</a>
+                </li>
+            </ul>
+
+            <!-- Search & Actions -->
+            <div class="d-flex align-items-center gap-3">
+                <!-- Search bar in navbar -->
+                <form class="d-flex" action="{% url 'catalog' %}" method="get">
+                    <div class="input-group">
+                        <input type="text" name="search" class="form-control border-0 bg-white bg-opacity-10 text-white rounded-start" placeholder="Search books, author, ISBN..." aria-label="Search" style="width: 250px;">
+                        <button class="btn btn-success border-0 rounded-end px-3" type="submit">
+                            <i class="bi bi-search"></i>
+                        </button>
+                    </div>
+                </form>
+
+                <!-- Theme Toggle Button -->
+                <button class="btn btn-outline-light border-0 rounded-circle p-2 d-flex align-items-center justify-content-center" id="theme-toggle" type="button" aria-label="Toggle Theme">
+                    <i class="bi bi-moon-fill" id="theme-toggle-icon" style="font-size: 1.15rem;"></i>
+                </button>
+                
+                <!-- User dropdown -->
+                {% if user.is_authenticated %}
+                <div class="dropdown">
+                    <button class="btn btn-outline-light border-0 dropdown-toggle d-flex align-items-center gap-2" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="bi bi-person-circle"></i>
+                        <span class="small">{{ user.username }}</span>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end border-0 shadow glass-panel">
+                        <li>
+                            <form action="{% url 'logout' %}" method="post" class="d-inline w-100">
+                                {% csrf_token %}
+                                <button type="submit" class="dropdown-item py-2 text-danger border-0 bg-transparent w-100 text-start">
+                                    <i class="bi bi-box-arrow-right me-2"></i>Logout
+                                </button>
+                            </form>
+                        </li>
+                    </ul>
+                </div>
+                {% else %}
+                <a class="btn btn-success px-4" href="{% url 'login' %}">
+                    <i class="bi bi-box-arrow-in-right me-1"></i>Login
+                </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</nav>

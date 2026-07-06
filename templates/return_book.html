@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Confirm Return | LibPortal{% endblock %}
+{% block content %}
+<div class="row g-4 animate-fade-in justify-content-center">
+    <div class="col-lg-8 col-md-10 col-sm-12">
+        <div class="glass-panel p-5">
+            <h1 class="fw-bold text-primary mb-2" style="font-family: 'Outfit', sans-serif;"><i class="bi bi-journal-arrow-up me-2"></i>Return Book</h1>
+            <p class="text-secondary mb-4">Review the circulation record details and confirm the return checkout.</p>
+            
+            <div class="row g-4 mb-4">
+                <div class="col-md-6">
+                    <span class="text-secondary small d-block">Book Title</span>
+                    <strong class="text-primary fs-5">{{ record.book.title }}</strong>
+                </div>
+                <div class="col-md-6">
+                    <span class="text-secondary small d-block">Issued To</span>
+                    <strong class="text-primary fs-5">{{ record.member.name }} (<code>{{ record.member.member_id }}</code>)</strong>
+                </div>
+                <div class="col-md-4">
+                    <span class="text-secondary small d-block">Issue Date</span>
+                    <strong class="text-primary">{{ record.issue_date|date:"d-b-Y" }}</strong>
+                </div>
+                <div class="col-md-4">
+                    <span class="text-secondary small d-block">Due Date</span>
+                    <strong class="text-primary">{{ record.due_date|date:"d-b-Y" }}</strong>
+                </div>
+                <div class="col-md-4">
+                    <span class="text-secondary small d-block">Return Date (Today)</span>
+                    <strong class="text-primary">{{ today|date:"d-b-Y" }}</strong>
+                </div>
+            </div>
+
+            <hr class="border-secondary-subtle my-4">
+
+            <!-- Fine Display Section -->
+            <div class="card border-0 mb-4 p-4 {% if calculated_fine > 0 %}bg-danger-subtle border-start border-4 border-danger{% else %}bg-success-subtle border-start border-4 border-success{% endif %}">
+                <div class="d-flex align-items-center justify-content-between">
+                    <div>
+                        <h5 class="fw-bold mb-1 {% if calculated_fine > 0 %}text-danger{% else %}text-success{% endif %}">
+                            {% if calculated_fine > 0 %}
+                            Overdue Fine Incurred
+                            {% else %}
+                            Returned on Time
+                            {% endif %}
+                        </h5>
+                        <p class="small text-secondary mb-0">
+                            {% if overdue_days > 0 %}
+                            Overdue by {{ overdue_days }} day(s). Late fine rate is ₹50 per day.
+                            {% else %}
+                            Book returned within the 14-day checkout limit.
+                            {% endif %}
+                        </p>
+                    </div>
+                    <div class="text-end">
+                        <span class="fs-2 fw-bold {% if calculated_fine > 0 %}text-danger{% else %}text-success{% endif %}">
+                            ₹{{ calculated_fine }}
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <form method="post" class="d-inline">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-primary-gradient px-4"><i class="bi bi-check2-square me-1"></i>Confirm Return</button>
+                <a href="{% url 'history' %}" class="btn btn-outline-secondary">Cancel</a>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

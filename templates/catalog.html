@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Book Catalog | LibPortal{% endblock %}
+{% block content %}
+<div class="row g-4 animate-fade-in">
+    <div class="col-12">
+        <h1 class="fw-bold mb-2 text-primary" style="font-family: 'Outfit', sans-serif;">Book Catalog</h1>
+        <p class="text-secondary">Search, discover, and issue books in our catalog repository.</p>
+    </div>
+    
+    <!-- Filters Area -->
+    <div class="col-12">
+        <div class="glass-panel p-4 mb-2">
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <div class="input-group">
+                        <span class="input-group-text bg-transparent border-end-0 border-secondary-subtle text-secondary"><i class="bi bi-search"></i></span>
+                        <input type="text" id="search-input" value="{{ search_query }}" class="form-control border-start-0 border-secondary-subtle bg-transparent text-primary" placeholder="Search by title, author, or ISBN...">
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="input-group">
+                        <span class="input-group-text bg-transparent border-end-0 border-secondary-subtle text-secondary"><i class="bi bi-funnel"></i></span>
+                        <select id="genre-select" class="form-select border-start-0 border-secondary-subtle bg-transparent text-primary">
+                            <option value="">All Genres</option>
+                            {% for genre in genres %}
+                            <option value="{{ genre }}" {% if selected_genre == genre %}selected{% endif %}>{{ genre }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="input-group">
+                        <span class="input-group-text bg-transparent border-end-0 border-secondary-subtle text-secondary"><i class="bi bi-shield-check"></i></span>
+                        <select id="availability-select" class="form-select border-start-0 border-secondary-subtle bg-transparent text-primary">
+                            <option value="">All Availability</option>
+                            <option value="available" {% if selected_availability == 'available' %}selected{% endif %}>Available</option>
+                            <option value="lowstock" {% if selected_availability == 'lowstock' %}selected{% endif %}>Low Stock</option>
+                            <option value="outofstock" {% if selected_availability == 'outofstock' %}selected{% endif %}>Out of Stock</option>
+                            <option value="issued" {% if selected_availability == 'issued' %}selected{% endif %}>Issued Out</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Dynamic Search Spinner -->
+<div id="catalog-spinner" class="d-none text-center my-4">
+    <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Searching catalog...</span>
+    </div>
+</div>
+
+<!-- Books Cards Container -->
+<div id="book-catalog-container">
+    {% include 'catalog_partial.html' %}
+</div>
+{% endblock %}

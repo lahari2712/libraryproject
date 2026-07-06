@@ -1,0 +1,116 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}{{ book.title }} | LibPortal{% endblock %}
+{% block content %}
+<div class="row g-4 animate-fade-in">
+    <!-- Back Option -->
+    <div class="col-12">
+        <a href="{% url 'catalog' %}" class="btn btn-outline-secondary border-0"><i class="bi bi-arrow-left me-1"></i>Back to Catalog</a>
+    </div>
+
+    <!-- Left Cover Card -->
+    <div class="col-lg-4 col-md-12">
+        {% if book.cover_url %}
+        <img src="{{ book.cover_url }}" class="img-fluid detail-cover w-100" alt="{{ book.title }}">
+        {% else %}
+        <div class="detail-cover bg-secondary d-flex align-items-center justify-content-center text-white" style="height: 400px;">
+            <i class="bi bi-book fs-1"></i>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Right Detail Column -->
+    <div class="col-lg-8 col-md-12">
+        <div class="glass-panel p-4 h-100 d-flex flex-column justify-content-between">
+            <div>
+                <span class="badge rounded-pill mb-2 {% if book.available_copies == 0 %}badge-outofstock{% elif book.available_copies <= 2 %}badge-lowstock{% else %}badge-available{% endif %}">
+                    {% if book.available_copies == 0 %}
+                    Out of Stock
+                    {% elif book.available_copies <= 2 %}
+                    Low Stock ({{ book.available_copies }} copies left)
+                    {% else %}
+                    Available ({{ book.available_copies }} of {{ book.total_copies }} copies)
+                    {% endif %}
+                </span>
+                <h1 class="fw-bold text-primary mb-1" style="font-family: 'Outfit', sans-serif;">{{ book.title }}</h1>
+                <p class="text-secondary fs-5">by <span class="fw-semibold text-primary">{{ book.author.name }}</span></p>
+
+                <div class="row g-3 my-4">
+                    <div class="col-6 col-md-3">
+                        <span class="text-secondary small d-block">ISBN</span>
+                        <strong class="text-primary">{{ book.isbn }}</strong>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <span class="text-secondary small d-block">Genre</span>
+                        <strong class="text-primary">{{ book.genre }}</strong>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <span class="text-secondary small d-block">Total Copies</span>
+                        <strong class="text-primary">{{ book.total_copies }}</strong>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <span class="text-secondary small d-block">Available Copies</span>
+                        <strong class="text-primary">{{ book.available_copies }}</strong>
+                    </div>
+                </div>
+
+                <hr class="border-secondary-subtle">
+
+                <h5 class="fw-bold text-primary mt-4" style="font-family: 'Outfit', sans-serif;"><i class="bi bi-person-lines-fill me-2"></i>Author Biography</h5>
+                <p class="text-secondary small">{{ book.author.biography }}</p>
+            </div>
+
+            {% if user.is_authenticated and user.is_staff %}
+            <div class="mt-4">
+                {% if book.available_copies > 0 %}
+                <a href="{% url 'book_issue' %}?book={{ book.id }}" class="btn btn-primary-gradient px-4"><i class="bi bi-journal-plus me-1"></i>Issue this Book</a>
+                {% else %}
+                <button class="btn btn-secondary px-4" disabled><i class="bi bi-journal-x me-1"></i>Out of Stock</button>
+                {% endif %}
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Circulation Records List -->
+    <div class="col-12 mt-5">
+        <h3 class="fw-bold text-primary mb-3" style="font-family: 'Outfit', sans-serif;"><i class="bi bi-clock-history me-2"></i>Recent Borrowers Logs</h3>
+        <div class="responsive-table-container">
+            <table class="table mb-0">
+                <thead>
+                    <tr>
+                        <th>Member Name</th>
+                        <th>Member ID</th>
+                        <th>Issue Date</th>
+                        <th>Due Date</th>
+                        <th>Return Date</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for record in circulation_history %}
+                    <tr>
+                        <td class="fw-semibold text-primary">{{ record.member.name }}</td>
+                        <td><code>{{ record.member.member_id }}</code></td>
+                        <td>{{ record.issue_date|date:"d-b-Y" }}</td>
+                        <td>{{ record.due_date|date:"d-b-Y" }}</td>
+                        <td>{% if record.return_date %}{{ record.return_date|date:"d-b-Y" }}{% else %}--{% endif %}</td>
+                        <td>
+                            {% if record.is_returned %}
+                            <span class="badge rounded-pill bg-success-subtle text-success border border-success-subtle px-3">Returned</span>
+                            {% else %}
+                            <span class="countdown-timer" data-due-date="{{ record.due_date|date:'Y-m-d' }}">Checking...</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="6" class="text-center text-secondary py-4">No borrow records found for this book title.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

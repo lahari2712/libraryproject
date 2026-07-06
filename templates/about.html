@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}About | LibPortal{% endblock %}
+{% block content %}
+<div class="row g-4 animate-fade-in justify-content-center">
+    <div class="col-lg-8 col-md-10 col-sm-12">
+        <div class="glass-panel p-5">
+            <h1 class="fw-bold text-primary mb-3" style="font-family: 'Outfit', sans-serif;"><i class="bi bi-info-circle-fill me-2"></i>About LibPortal</h1>
+            <p class="text-secondary lead">LibPortal is a modern, responsive full-stack platform designed to facilitate catalog operations and book issue-return tracking for public libraries.</p>
+            <p class="text-secondary">It includes detailed modules for staff administrators, members databases, automated fine calculations, overdue alerting engines, and visual dashboard reporting using advanced charting.</p>
+            
+            <h4 class="fw-bold text-primary mt-4" style="font-family: 'Outfit', sans-serif;"><i class="bi bi-cpu-fill me-2"></i>Key Technology Highlights</h4>
+            <ul class="text-secondary mb-0">
+                <li class="mb-2"><strong>Backend Framework:</strong> Django 5.x with SQLite for transactional relational data storage.</li>
+                <li class="mb-2"><strong>Design System:</strong> Bootstrap 5 with responsive CSS variables, layout transitions, glassmorphic panels, and gradient headers.</li>
+                <li class="mb-2"><strong>Client Scripting:</strong> Vanilla ES6 Javascript featuring debounced AJAX search hooks, localStorage selectors, and live calculations.</li>
+                <li class="mb-2"><strong>Asset Delivery:</strong> WhiteNoise engine supporting brotli compression and caching, configured for Render deployment.</li>
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}

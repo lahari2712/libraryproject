@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Issue Book | LibPortal{% endblock %}
+{% block content %}
+<div class="row g-4 animate-fade-in justify-content-center">
+    <div class="col-lg-8 col-md-10 col-sm-12">
+        <div class="glass-panel p-5">
+            <h1 class="fw-bold text-primary mb-2" style="font-family: 'Outfit', sans-serif;"><i class="bi bi-journal-plus me-2"></i>Issue Book</h1>
+            <p class="text-secondary mb-4">Select a registered member, book, and register the circulation date transaction.</p>
+            
+            <form method="post" novalidate>
+                {% csrf_token %}
+                
+                {% if form.non_field_errors %}
+                <div class="alert alert-danger">
+                    {% for error in form.non_field_errors %}
+                    <div>{{ error }}</div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+
+                <div class="mb-3">
+                    <label for="{{ form.book.id_for_label }}" class="form-label fw-semibold">Select Book</label>
+                    {{ form.book }}
+                    {% if form.book.errors %}
+                    <div class="text-danger small mt-1">{{ form.book.errors|join:", " }}</div>
+                    {% endif %}
+                </div>
+
+                <div class="mb-3">
+                    <label for="{{ form.member.id_for_label }}" class="form-label fw-semibold">Select Member</label>
+                    {{ form.member }}
+                    {% if form.member.errors %}
+                    <div class="text-danger small mt-1">{{ form.member.errors|join:", " }}</div>
+                    {% endif %}
+                </div>
+
+                <div class="row g-3 mb-4">
+                    <div class="col-md-6">
+                        <label for="{{ form.issue_date.id_for_label }}" class="form-label fw-semibold">Issue Date</label>
+                        {{ form.issue_date }}
+                        {% if form.issue_date.errors %}
+                        <div class="text-danger small mt-1">{{ form.issue_date.errors|join:", " }}</div>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold">Calculated Due Date</label>
+                        <div class="form-control bg-secondary-subtle text-primary border-secondary-subtle d-flex align-items-center" style="height: 38px;">
+                            <span id="due-date-preview" class="fw-semibold">--</span>
+                        </div>
+                        <div class="form-text small text-secondary">Automatically sets to Issue Date + 14 Days.</div>
+                    </div>
+                </div>
+
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-primary-gradient px-4"><i class="bi bi-check2-circle me-1"></i>Confirm Issue</button>
+                    <a href="{% url 'catalog' %}" class="btn btn-outline-secondary">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
