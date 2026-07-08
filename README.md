@@ -38,7 +38,7 @@ A modern, responsive full-stack Django web application designed for public libra
 ├── create_superuser.py
 ├── .gitignore
 ├── README.md
-├── myproject/
+├── libraryproject/
 │   ├── settings.py
 │   ├── urls.py
 │   ├── wsgi.py

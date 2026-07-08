@@ -2,7 +2,7 @@ import os
 # pyrefly: ignore [missing-import]
 import django
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'myproject.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'libraryproject.settings')
 django.setup()
 
 # pyrefly: ignore [missing-import]

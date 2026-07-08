@@ -1,5 +1,5 @@
 """
-URL configuration for myproject project.
+URL configuration for libraryproject project.
 """
 from django.contrib import admin
 from django.urls import path, include
