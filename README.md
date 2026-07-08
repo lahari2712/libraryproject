@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Digital Library & E-Book Circulation Portal
 
 A modern, responsive full-stack Django web application designed for public libraries to manage authors, book catalogs, reader registries, and circulation records. Features a custom glassmorphic user interface built with Bootstrap 5, complete with dynamic ES6 JavaScript tools and visual analytics dashboards.
@@ -170,3 +171,6 @@ Distributed under the MIT License.
 
 ## Author
 Developed by the LibPortal Administration Team.
+=======
+# libraryproject
+>>>>>>> 5df0a08c64f32217bc947f0f3105163ade1cf865
