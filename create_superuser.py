@@ -1,4 +1,10 @@
-from django.contrib.auth.models import User
+import os
+import django  # pyrefly: ignore [missing-import]
+
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'libraryproject.settings')
+django.setup()
+
+from django.contrib.auth.models import User  # pyrefly: ignore [missing-import]
 
 username = "admin"
 email = "admin@gmail.com"
